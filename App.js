@@ -4,6 +4,8 @@ import background from "./assets/img/bg.jpg";
 import { useFonts } from "expo-font";
 import { RegistrationScreen } from "./src/screens/RegistrationScreen";
 //import { LoginScreen } from './src/screens/LoginScreen';
+//import { PostsScreen } from "./src/screens/PostsScreen";
+
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -19,6 +21,7 @@ export default function App() {
       <ImageBackground source={background} style={styles.background}>
         {fontsLoaded && <RegistrationScreen />}
         {/* {fontsLoaded && <LoginScreen />} */}
+        {/* {fontsLoaded && <PostsScreen />} */}
       </ImageBackground>
       <StatusBar style="auto" />
     </View>
