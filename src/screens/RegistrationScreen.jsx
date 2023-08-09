@@ -5,94 +5,153 @@ import {
   View,
   TextInput,
   TouchableOpacity,
+  KeyboardAvoidingView,
+  TouchableWithoutFeedback,
+  Platform,
+  Keyboard,
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 
 export function RegistrationScreen() {
+  const [login, setLogin] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
   const [isLoginFocused, setLoginFocused] = useState(false);
   const [isEmailFocused, setEmailFocused] = useState(false);
   const [isPasswordFocused, setPasswordFocused] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
+  const [isShowKeyboard, setShowKeyboard] = useState(false);
+
+  const handleSubmit = () => {
+    console.log("Login:", login);
+    console.log("Email:", email);
+    console.log("Password:", password);
+  };
+  const handleLoginFocus = () => {
+    setLoginFocused(true);
+    setShowKeyboard(true);
+  };
+
+  const handleLoginBlur = () => {
+    setLoginFocused(false);
+  };
+
+  const handleEmailFocus = () => {
+    setEmailFocused(true);
+    setShowKeyboard(true);
+  };
+
+  const handleEmailBlur = () => {
+    setEmailFocused(false);
+  };
+
+  const handlePasswordFocus = () => {
+    setPasswordFocused(true);
+    setShowKeyboard(true);
+  };
+
+  const handlePasswordBlur = () => {
+    setPasswordFocused(false);
+  };
+
   return (
-    <View style={styles.container}>
-      <View style={styles.avatar}>
-        <TouchableOpacity
-          activeOpacity={1}
-          style={styles.btnAvatar}
-          onPress={() => console.log("btnAvatar")}
-        >
-          <AntDesign name="plus" size={20} color="#FF6C00" />
-        </TouchableOpacity>
-      </View>
-      <Text style={styles.title}>Реєстрація</Text>
-      <View style={styles.form}>
-        <View>
-          <TextInput
-            style={[
-              styles.input,
-              isLoginFocused && {
-                borderColor: "#FF6C00",
-                backgroundColor: "#fff",
-              },
-            ]}
-            placeholder="Логін"
-            onFocus={() => setLoginFocused(true)}
-            onBlur={() => setLoginFocused(false)}
-          />
-        </View>
-        <View>
-          <TextInput
-            style={[
-              styles.input,
-              isEmailFocused && {
-                borderColor: "#FF6C00",
-                backgroundColor: "#fff",
-              },
-            ]}
-            placeholder="Адреса електронної пошти"
-            onFocus={() => setEmailFocused(true)}
-            onBlur={() => setEmailFocused(false)}
-          />
-        </View>
-        <View>
-          <TextInput
-            style={[
-              styles.input,
-              isPasswordFocused && {
-                borderColor: "#FF6C00",
-                backgroundColor: "#fff",
-              },
-            ]}
-            placeholder="Пароль"
-            secureTextEntry={!showPassword}
-            onFocus={() => setPasswordFocused(true)}
-            onBlur={() => setPasswordFocused(false)}
-          />
-          <TouchableOpacity
-            style={styles.showPasswordButton}
-            onPress={() => setShowPassword(!showPassword)}
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <KeyboardAvoidingView
+        style={styles.container}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={isShowKeyboard ? -190 : 0}
+      >
+        <View style={styles.container}>
+          <KeyboardAvoidingView
+            style={styles.avatarContainer}
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
           >
-            <Text style={styles.showPasswordButtonText}>
-              {showPassword ? "Приховати" : "Показати"}
-            </Text>
-          </TouchableOpacity>
+            <View style={styles.avatar}>
+              <TouchableOpacity
+                activeOpacity={1}
+                style={styles.btnAvatar}
+                onPress={() => console.log("btnAvatar")}
+              >
+                <AntDesign name="plus" size={20} color="#FF6C00" />
+              </TouchableOpacity>
+            </View>
+          </KeyboardAvoidingView>
+          <Text style={styles.title}>Реєстрація</Text>
+          <View style={styles.form}>
+            <View>
+              <TextInput
+                style={[
+                  styles.input,
+                  isLoginFocused && {
+                    borderColor: "#FF6C00",
+                    backgroundColor: "#fff",
+                  },
+                ]}
+                placeholder="Логін"
+                onFocus={handleLoginFocus}
+                onBlur={handleLoginBlur}
+                onChangeText={setLogin}
+              />
+            </View>
+            <View>
+              <TextInput
+                keyboardType="email-address"
+                style={[
+                  styles.input,
+                  isEmailFocused && {
+                    borderColor: "#FF6C00",
+                    backgroundColor: "#fff",
+                  },
+                ]}
+                placeholder="Адреса електронної пошти"
+                onFocus={handleEmailFocus}
+                onBlur={handleEmailBlur}
+                onChangeText={setEmail}
+              />
+            </View>
+            <View>
+              <TextInput
+                style={[
+                  styles.input,
+                  isPasswordFocused && {
+                    borderColor: "#FF6C00",
+                    backgroundColor: "#fff",
+                  },
+                ]}
+                placeholder="Пароль"
+                secureTextEntry={!showPassword}
+                onFocus={handlePasswordFocus}
+                onBlur={handlePasswordBlur}
+                onChangeText={setPassword}
+              />
+              <TouchableOpacity
+                style={styles.showPasswordButton}
+                onPress={() => setShowPassword(!showPassword)}
+              >
+                <Text style={styles.showPasswordButtonText}>
+                  {showPassword ? "Приховати" : "Показати"}
+                </Text>
+              </TouchableOpacity>
+            </View>
+            <TouchableOpacity
+              activeOpacity={0.7}
+              onPress={handleSubmit}
+              style={styles.btnSubmit}
+            >
+              <Text style={styles.textBtnSubmit}>Зареєструватися</Text>
+            </TouchableOpacity>
+          </View>
+          <Text style={styles.textLink}>Вже є акаунт? Увійти</Text>
         </View>
-        <TouchableOpacity
-          activeOpacity={0.7}
-          onPress={() => console.log("btnSubmit")}
-          style={styles.btnSubmit}
-        >
-          <Text style={styles.textBtnSubmit}>Зареєструватися</Text>
-        </TouchableOpacity>
-      </View>
-      <Text style={styles.textLink}>Вже є акаунт? Увійти</Text>
-    </View>
+      </KeyboardAvoidingView>
+    </TouchableWithoutFeedback>
   );
 }
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 92,
+    paddingTop: 52,
     paddingBottom: 78,
     backgroundColor: "#fff",
     width: "100%",
@@ -121,6 +180,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#fff",
+  },
+  avatarContainer: {
+    top: -52,
+    position: "absolute",
+    alignItems: "center",
   },
   title: {
     fontFamily: "Roboto",

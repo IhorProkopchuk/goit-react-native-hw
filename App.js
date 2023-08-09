@@ -3,7 +3,7 @@ import { StyleSheet, View, ImageBackground } from "react-native";
 import background from "./assets/img/bg.jpg";
 import { useFonts } from "expo-font";
 import { RegistrationScreen } from "./src/screens/RegistrationScreen";
-//import { LoginScreen } from './src/screens/LoginScreen';
+//import { LoginScreen } from "./src/screens/LoginScreen";
 //import { PostsScreen } from "./src/screens/PostsScreen";
 
 
