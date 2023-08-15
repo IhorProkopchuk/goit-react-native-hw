@@ -5,162 +5,179 @@ import {
   View,
   TextInput,
   TouchableOpacity,
-  KeyboardAvoidingView,
+  ImageBackground,
   TouchableWithoutFeedback,
+  KeyboardAvoidingView,
   Platform,
   Keyboard,
 } from "react-native";
+import { StatusBar } from "expo-status-bar";
+import background from "../../assets/img/bg.jpg";
 import { AntDesign } from "@expo/vector-icons";
 
-export function RegistrationScreen() {
+
+export function RegistrationScreen({ navigation }) {
   const [login, setLogin] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  
+  const [inputLoginInFocus, setInputLoginInFocus] = useState(false);
+  const [inputEmailInFocus, setInputEmailInFocus] = useState(false);
+  const [inputPasswordInFocus, setInputPasswordInFocus] = useState(false);
+  const [showPassword, setShowPassword] = useState(true);
 
-  const [isLoginFocused, setLoginFocused] = useState(false);
-  const [isEmailFocused, setEmailFocused] = useState(false);
-  const [isPasswordFocused, setPasswordFocused] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
+  const [isShowKeyboard, setIsShowKeyboard] = useState(false);
 
-  const [isShowKeyboard, setShowKeyboard] = useState(false);
+  const isHideKeyboard = () => {
+    Keyboard.dismiss();
+    setIsShowKeyboard(false);
+  };
 
   const handleSubmit = () => {
     console.log("Login:", login);
     console.log("Email:", email);
     console.log("Password:", password);
-  };
-  const handleLoginFocus = () => {
-    setLoginFocused(true);
-    setShowKeyboard(true);
+    navigation.navigate("Home");
   };
 
-  const handleLoginBlur = () => {
-    setLoginFocused(false);
+  const onFocusLogin = () => {
+      setIsShowKeyboard(true);
+      setInputLoginInFocus(true);
+  };
+  
+  const onFocusEmail = () => {
+    setIsShowKeyboard(true);
+    setInputEmailInFocus(true);
   };
 
-  const handleEmailFocus = () => {
-    setEmailFocused(true);
-    setShowKeyboard(true);
-  };
-
-  const handleEmailBlur = () => {
-    setEmailFocused(false);
-  };
-
-  const handlePasswordFocus = () => {
-    setPasswordFocused(true);
-    setShowKeyboard(true);
-  };
-
-  const handlePasswordBlur = () => {
-    setPasswordFocused(false);
+  const onFocusPassword = () => {
+    setIsShowKeyboard(true);
+    setInputPasswordInFocus(true);
   };
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <KeyboardAvoidingView
-        style={styles.container}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        keyboardVerticalOffset={isShowKeyboard ? -190 : 0}
-      >
-        <View style={styles.container}>
+    <TouchableWithoutFeedback onPress={isHideKeyboard}>
+      <View style={styles.container}>
+        <StatusBar style="auto" />
+        <ImageBackground source={background} style={styles.backgroundStyle}>
           <KeyboardAvoidingView
-            style={styles.avatarContainer}
-            behavior={Platform.OS === "ios" ? "padding" : "height"}
+            behavior={Platform.OS == "ios" ? "padding" : "height"}
+            keyboardVerticalOffset={isShowKeyboard ? -95 : 0}
+            style={styles.activeKeyboard}
           >
-            <View style={styles.avatar}>
+            <View
+              style={{
+                ...styles.containerForm,
+                paddingBottom: isShowKeyboard ? 16 : 144,
+              }}
+            >
+              <View style={styles.containerAvatar}>
+                <TouchableOpacity
+                  activeOpacity={0.7}
+                  style={styles.btnAvatar}
+                  onPress={() => console.log("btnAvatar")}
+                >
+                  <AntDesign name="plus" size={20} color="#FF6C00" />
+                </TouchableOpacity>
+              </View>
+              <Text style={styles.title}>Реєстрація</Text>
+              <View style={styles.form}>
+                <View>
+                  <TextInput
+                    style={[
+                      styles.input,
+                      inputLoginInFocus && styles.inputActive,
+                    ]}
+                    placeholder="Логін"
+                    value={login}
+                    onFocus={onFocusLogin}
+                    onBlur={() => setInputLoginInFocus(false)}
+                    onChangeText={setLogin}
+                  />
+                </View>
+                <View>
+                  <TextInput
+                    keyboardType="email-address"
+                    style={[
+                      styles.input,
+                      inputEmailInFocus && styles.inputActive,
+                    ]}
+                    placeholder="Адреса електронної пошти"
+                    value={email}
+                    onFocus={onFocusEmail}
+                    onBlur={() => setInputEmailInFocus(false)}
+                    onChangeText={setEmail}
+                  />
+                </View>
+                <View style={styles.label}>
+                  <TextInput
+                    style={[
+                      styles.input,
+                      inputPasswordInFocus && styles.inputActive,
+                    ]}
+                    placeholder="Пароль"
+                    secureTextEntry={showPassword}
+                    value={password}
+                    onChangeText={setPassword}
+                    onFocus={onFocusPassword}
+                    onBlur={() => setInputPasswordInFocus(false)}
+                  />
+                  <TouchableOpacity
+                    style={styles.containerShowPassword}
+                    onPress={() => setShowPassword((prev) => !prev)}
+                  >
+                    <Text style={styles.textShowPassword}>
+                      {showPassword ? "Показати" : "Приховати"}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
               <TouchableOpacity
-                activeOpacity={1}
-                style={styles.btnAvatar}
-                onPress={() => console.log("btnAvatar")}
+                activeOpacity={0.7}
+                onPress={handleSubmit}
+                style={styles.btnSubmit}
               >
-                <AntDesign name="plus" size={20} color="#FF6C00" />
+                <Text style={styles.textBtnSubmit}>Зареєструватися</Text>
               </TouchableOpacity>
+              {!isShowKeyboard && (
+                <TouchableOpacity
+                  onPress={() => navigation.navigate("Login")}
+                >
+                  <Text style={styles.textLink}>Вже є акаунт? Увійти</Text>
+                </TouchableOpacity>
+              )}
             </View>
           </KeyboardAvoidingView>
-          <Text style={styles.title}>Реєстрація</Text>
-          <View style={styles.form}>
-            <View>
-              <TextInput
-                style={[
-                  styles.input,
-                  isLoginFocused && {
-                    borderColor: "#FF6C00",
-                    backgroundColor: "#fff",
-                  },
-                ]}
-                placeholder="Логін"
-                onFocus={handleLoginFocus}
-                onBlur={handleLoginBlur}
-                onChangeText={setLogin}
-              />
-            </View>
-            <View>
-              <TextInput
-                keyboardType="email-address"
-                style={[
-                  styles.input,
-                  isEmailFocused && {
-                    borderColor: "#FF6C00",
-                    backgroundColor: "#fff",
-                  },
-                ]}
-                placeholder="Адреса електронної пошти"
-                onFocus={handleEmailFocus}
-                onBlur={handleEmailBlur}
-                onChangeText={setEmail}
-              />
-            </View>
-            <View>
-              <TextInput
-                style={[
-                  styles.input,
-                  isPasswordFocused && {
-                    borderColor: "#FF6C00",
-                    backgroundColor: "#fff",
-                  },
-                ]}
-                placeholder="Пароль"
-                secureTextEntry={!showPassword}
-                onFocus={handlePasswordFocus}
-                onBlur={handlePasswordBlur}
-                onChangeText={setPassword}
-              />
-              <TouchableOpacity
-                style={styles.showPasswordButton}
-                onPress={() => setShowPassword(!showPassword)}
-              >
-                <Text style={styles.showPasswordButtonText}>
-                  {showPassword ? "Приховати" : "Показати"}
-                </Text>
-              </TouchableOpacity>
-            </View>
-            <TouchableOpacity
-              activeOpacity={0.7}
-              onPress={handleSubmit}
-              style={styles.btnSubmit}
-            >
-              <Text style={styles.textBtnSubmit}>Зареєструватися</Text>
-            </TouchableOpacity>
-          </View>
-          <Text style={styles.textLink}>Вже є акаунт? Увійти</Text>
-        </View>
-      </KeyboardAvoidingView>
+        </ImageBackground>
+      </View>
     </TouchableWithoutFeedback>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 52,
-    paddingBottom: 78,
+    flex: 1,
+    backgroundColor: "#fff",
+  },
+  backgroundStyle: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "flex-end",
+  },
+  activeKeyboard: {
+    width: "100%",
+  },
+  containerForm: {
+    paddingTop: 92,
     backgroundColor: "#fff",
     width: "100%",
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
     alignItems: "center",
     position: "relative",
+    paddingHorizontal: 16,
   },
-  avatar: {
+  containerAvatar: {
     width: 120,
     height: 120,
     top: -60,
@@ -171,7 +188,7 @@ const styles = StyleSheet.create({
   btnAvatar: {
     position: "absolute",
     bottom: 14,
-    right: -12,
+    right: -12.5,
     width: 25,
     height: 25,
     borderRadius: 50,
@@ -181,14 +198,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#fff",
   },
-  avatarContainer: {
-    top: -52,
-    position: "absolute",
-    alignItems: "center",
-  },
+
   title: {
     fontFamily: "Roboto",
-    fontWeight: 500,
+    fontWeight: "500",
     fontSize: 30,
     lineHeight: 35,
     textAlign: "center",
@@ -197,8 +210,6 @@ const styles = StyleSheet.create({
   },
   form: {
     width: "100%",
-    paddingLeft: 16,
-    paddingRight: 16,
     marginBottom: 16,
   },
   input: {
@@ -214,17 +225,10 @@ const styles = StyleSheet.create({
     paddingLeft: 16,
     paddingRight: 40,
   },
-  showPasswordButton: {
-    position: "absolute",
-    top: 0,
-    right: 0,
-    height: 50,
-    justifyContent: "center",
-    paddingRight: 16,
-  },
-  showPasswordButtonText: {
-    color: "#1B4371",
-    fontSize: 16,
+  inputActive: {
+    borderWidth: 1,
+    borderColor: "#FF6C00",
+    backgroundColor: "#fff",
   },
   btnSubmit: {
     justifyContent: "center",
@@ -233,7 +237,7 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     height: 50,
     backgroundColor: "#FF6C00",
-    marginTop: 43,
+    marginBottom: 16,
   },
   textBtnSubmit: {
     paddingVertical: 16,
@@ -243,6 +247,20 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
   },
   textLink: {
+    fontSize: 16,
+    lineHeight: 19,
+    textAlign: "center",
+    color: "#1B4371",
+  },
+  label: {
+    position: "relative",
+  },
+  containerShowPassword: {
+    position: "absolute",
+    right: 16,
+    top: "25%",
+  },
+  textShowPassword: {
     fontSize: 16,
     lineHeight: 19,
     textAlign: "center",
