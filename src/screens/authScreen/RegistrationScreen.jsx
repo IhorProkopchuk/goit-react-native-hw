@@ -12,16 +12,20 @@ import {
   Keyboard,
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
-import background from "../../assets/img/bg.jpg";
+import background from "../../../assets/img/bg.jpg";
+import { AntDesign } from "@expo/vector-icons";
 
-export function LoginScreen({ navigation }) {  
+
+export function RegistrationScreen({ navigation }) {
+  const [login, setLogin] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
+  
+  const [inputLoginInFocus, setInputLoginInFocus] = useState(false);
   const [inputEmailInFocus, setInputEmailInFocus] = useState(false);
   const [inputPasswordInFocus, setInputPasswordInFocus] = useState(false);
-  
   const [showPassword, setShowPassword] = useState(true);
+
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
 
   const isHideKeyboard = () => {
@@ -30,11 +34,17 @@ export function LoginScreen({ navigation }) {
   };
 
   const handleSubmit = () => {
+    console.log("Login:", login);
     console.log("Email:", email);
     console.log("Password:", password);
     navigation.navigate("Home");
   };
 
+  const onFocusLogin = () => {
+      setIsShowKeyboard(true);
+      setInputLoginInFocus(true);
+  };
+  
   const onFocusEmail = () => {
     setIsShowKeyboard(true);
     setInputEmailInFocus(true);
@@ -61,8 +71,30 @@ export function LoginScreen({ navigation }) {
                 paddingBottom: isShowKeyboard ? 16 : 144,
               }}
             >
-              <Text style={styles.title}>Увійти</Text>
+              <View style={styles.containerAvatar}>
+                <TouchableOpacity
+                  activeOpacity={0.7}
+                  style={styles.btnAvatar}
+                  onPress={() => console.log("btnAvatar")}
+                >
+                  <AntDesign name="plus" size={20} color="#FF6C00" />
+                </TouchableOpacity>
+              </View>
+              <Text style={styles.title}>Реєстрація</Text>
               <View style={styles.form}>
+                <View>
+                  <TextInput
+                    style={[
+                      styles.input,
+                      inputLoginInFocus && styles.inputActive,
+                    ]}
+                    placeholder="Логін"
+                    value={login}
+                    onFocus={onFocusLogin}
+                    onBlur={() => setInputLoginInFocus(false)}
+                    onChangeText={setLogin}
+                  />
+                </View>
                 <View>
                   <TextInput
                     keyboardType="email-address"
@@ -105,15 +137,13 @@ export function LoginScreen({ navigation }) {
                 onPress={handleSubmit}
                 style={styles.btnSubmit}
               >
-                <Text style={styles.textBtnSubmit}>Увійти</Text>
+                <Text style={styles.textBtnSubmit}>Зареєструватися</Text>
               </TouchableOpacity>
               {!isShowKeyboard && (
                 <TouchableOpacity
-                  onPress={() => navigation.navigate("Registration")}
+                  onPress={() => navigation.navigate("Login")}
                 >
-                  <Text style={styles.textLink}>
-                    Немає акаунту? Зареєструватися
-                  </Text>
+                  <Text style={styles.textLink}>Вже є акаунт? Увійти</Text>
                 </TouchableOpacity>
               )}
             </View>
@@ -138,7 +168,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   containerForm: {
-    paddingTop: 32,
+    paddingTop: 92,
     backgroundColor: "#fff",
     width: "100%",
     borderTopLeftRadius: 25,
@@ -147,6 +177,28 @@ const styles = StyleSheet.create({
     position: "relative",
     paddingHorizontal: 16,
   },
+  containerAvatar: {
+    width: 120,
+    height: 120,
+    top: -60,
+    backgroundColor: "#F6F6F6",
+    borderRadius: 16,
+    position: "absolute",
+  },
+  btnAvatar: {
+    position: "absolute",
+    bottom: 14,
+    right: -12.5,
+    width: 25,
+    height: 25,
+    borderRadius: 50,
+    borderWidth: 1,
+    borderColor: "#FF6C00",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#fff",
+  },
+
   title: {
     fontFamily: "Roboto",
     fontWeight: "500",
@@ -216,4 +268,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default LoginScreen;
+export default RegistrationScreen;
